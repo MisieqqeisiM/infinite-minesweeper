@@ -11,16 +11,17 @@ self.FieldStorage = FieldStorage;
 
 if (localStorage.getItem(fieldName)) {
 	self.field = FieldStorage.load(fieldName);
+	FieldStorage.registerAutoSave(field, fieldName);
 } else {
-	self.field = new Field(0.20, 3);
+	self.field = new Field(0.1, 3);
+	FieldStorage.registerAutoSave(field, fieldName);
 	field.open(1,1);
-	FieldStorage.save(field, fieldName);
 }
 // make the variables available globally, like in index.html and the console
 self.renderer = new FieldRenderer(field);
 self.bot = new SimpleBot(field);
 
-FieldStorage.registerAutoSave(field, fieldName);
+
 
 field.on("cellChanged", ()=>{
 	document.getElementById("score").innerHTML = field.score;

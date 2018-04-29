@@ -33,6 +33,7 @@ export default class Field extends EventEmitter{
 		this.score = 0;
 		this.chunksToSave = [];
 		this.visibleChunks = [];
+		this.toOpen = [];
 		// todo someday: 
 		// be able to change the options through an object
 		// overwrite mine state
@@ -58,7 +59,18 @@ export default class Field extends EventEmitter{
 		if(!this.isEligibleToOpen(x, y)){
 			return false;
 		}
-		
+
+		let openedCells = [];
+
+		let chunkX = Math.floor(x/CHUNK_SIZE);
+		let chunkY = Math.floor(y/CHUNK_SIZE);
+		let visible = false;
+		for(let i = 0; i<this.visibleChunks.length;i++){
+			if(this.visibleChunks[i].x == chunkX&&this.visibleChunks[i].y == chunkY)
+				visible = true;
+		}
+		if(visible){
+
 		//todo better generation
 		if(cell.isMine === undefined){
 			cell = this.generateCell(x, y, cell.isFlagged);
@@ -66,7 +78,7 @@ export default class Field extends EventEmitter{
 		
 		cell.isOpen = true;
 
-		let openedCells = [];
+		
 		openedCells.push(cell);
 
 		if(cell.isMine){
@@ -91,12 +103,16 @@ export default class Field extends EventEmitter{
 		this.emit("cellChanged", cell);
 		
 		// floodfill
+		
 		if(cell.value() === 0){
 			cell.getNeighbors() // get all the neighbors
 				.filter(neighbor=>!neighbor.isOpen) // filter the array, so only the closed neighbors are in it
 				.forEach(closedNeighbor=>{
 					closedNeighbor.open();
 				});
+		}
+		} else{
+			this.toOpen.push(cell);
 		}
 
 		return openedCells.length >= 1;
@@ -157,8 +173,17 @@ export default class Field extends EventEmitter{
 			});
 		}
 		}
+		for(let i = 0; i<this.toOpen.length;i++){
+			if(Math.floor(this.toOpen[i].x/CHUNK_SIZE)==x&&Math.floor(this.toOpen[i].y/CHUNK_SIZE)==y){
+				
+				this.toOpen[i].open();
+				this.toOpen.splice(i, 1);
+				i--;
+			}
+		}
 	}
 	unloadChunk(x,y){
+		this.emit("save",[this.field[x][y]]);
 		this.field[x][y].getAll().forEach((cell)=>{
 			if(!(cell.sprite === undefined)){
 				cell.sprite.parent.removeChild(cell.sprite);
@@ -233,6 +258,9 @@ export default class Field extends EventEmitter{
 		if(cell.isOpen)	return false;
 		return true;
 	}
+	resetVisibleChunks(x,y){
+		this.visibleChunks = [];
+	}
 	setVisibleChunk(x,y){
 		this.visibleChunks.push({'x':x,'y':y});
 	}
@@ -252,7 +280,6 @@ export default class Field extends EventEmitter{
 		for(let i = 0; i<this.visibleChunks.length;i++){
 			this.showChunk(this.visibleChunks[i].x,this.visibleChunks[i].y);
 		}
-		this.visibleChunks = [];
 	}
 	setSafeCells(x0, y0){// initiate the field with a circle of cells that aren't mines
 		this.pristine = false;

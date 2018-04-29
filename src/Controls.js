@@ -121,6 +121,7 @@ export default class Controls {
 		document.getElementsByTagName("BODY")[0].style.cursor = "default";
 	}
 	static setLoadedChunksAround(x,y,width){
+		Controls.field.resetVisibleChunks();
 		let windowChunkWidth =  Math.ceil(window.innerWidth/width/CHUNK_SIZE);
 		let windowChunkHeight = Math.ceil(window.innerHeight/width/CHUNK_SIZE);
 		for(let i = x-1; i<x+windowChunkWidth;i++){
