@@ -31,9 +31,8 @@ export default class FieldStorage {
 	static saveChunk(chunk,id){
 		localStorage.setItem(id+chunk.x+";"+chunk.y, JSON.stringify(chunk));
 	}
-	static loadChunk(id,x,y,field){
-		
-		var chunk = new Chunk(x,y,field);
+	static loadChunk(id,x,y,field,visible=true){
+		var chunk = new Chunk(x,y,field,visible);
 		if(localStorage.getItem(id+chunk.x+";"+chunk.y)){
 			var data = JSON.parse(localStorage.getItem(id+chunk.x+";"+chunk.y));
 			

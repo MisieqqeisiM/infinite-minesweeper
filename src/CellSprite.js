@@ -13,7 +13,7 @@ export default class CellSprite extends PIXI.Container{ // class for creating an
 		front.name = "fg";
 		this.addChildAt(back, 0);
 		this.addChildAt(front, 1);
-		this.playUpdateAnimation();
+		//this.playUpdateAnimation();
 	}
 	
 	update(cell){
@@ -23,7 +23,7 @@ export default class CellSprite extends PIXI.Container{ // class for creating an
 		let cellTexture = this.getCellTexture(cell);
 		back.texture = cellTexture.back;
 		front.texture = cellTexture.front;
-		this.playUpdateAnimation();
+		//this.playUpdateAnimation();
 	}
 	
 	playUpdateAnimation(cell) {

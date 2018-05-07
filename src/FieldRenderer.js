@@ -14,8 +14,13 @@ export default class FieldRenderer /*extends PIXI.Application*/ {
 		defaultField = field;
 		
 		defaultField.on("cellChanged", (cell)=>{
-			
 				updateCell(defaultField,cell);
+		});
+		defaultField.on("chunkChanged", (chunk)=>{
+			chunk.getAll().forEach((cell)=>{
+				if(cell.isOpen||cell.isFlagged)
+					updateCell(defaultField,cell);
+			});
 		});
 
 		Textures.load().then(setup);

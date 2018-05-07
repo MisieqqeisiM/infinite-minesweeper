@@ -2,9 +2,10 @@ import Cell from "./Cell";
 
 export const CHUNK_SIZE = 32;
 export class Chunk{
-    constructor(x,y,parent){
+    constructor(x,y,parent,visible=true){
         this.x = x;
         this.y = y;
+        this.visible = visible;
         this.cells = [];
         for(let i = 0; i<CHUNK_SIZE;i++){
             this.cells[i] = [];
